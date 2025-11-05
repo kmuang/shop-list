@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shopping List</title> 
+<link rel="shortcut icon" href="img/logo.png" type="image/x-icon">
+<script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen flex flex-col items-center p-4">
+
+<h1 class="text-3xl font-bold text-blue-600 mb-6">🛒 Shopping List</h1>
+
+<div class="w-full max-w-md bg-white rounded-xl shadow-md p-4">
+  <!-- Input -->
+  <div class="flex gap-2 mb-4">
+    <input id="item-input" type="text" placeholder="Add new item" class="flex-1 p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+    <button id="add-btn" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">Add</button>
+  </div>
+
+  <!-- List -->
+  <ul id="shopping-list" class="space-y-2">
+    <!-- List items go here -->
+  </ul>
+</div>
+
+<footer class="text-gray-600 text-sm mt-6">
+  &copy; 2025 Shopping App. All rights reserved.
+</footer>
+
+<script>
+const shoppingList = [];
+const input = document.getElementById('item-input');
+const addBtn = document.getElementById('add-btn');
+const listContainer = document.getElementById('shopping-list');
+
+// Function to render list
+function renderList() {
+  listContainer.innerHTML = '';
+  shoppingList.forEach((item, index) => {
+    const li = document.createElement('li');
+    li.className = 'flex justify-between items-center bg-gray-50 p-2 rounded-md shadow-sm hover:bg-gray-100 transition';
+
+    li.innerHTML = `
+      <span class="${item.bought ? 'line-through text-gray-400' : ''}">${item.name}</span>
+      <div class="flex gap-2">
+        <button class="buy-btn text-green-600 hover:text-green-800">${item.bought ? 'Undo' : 'Bought'}</button>
+        <button class="remove-btn text-red-600 hover:text-red-800">Remove</button>
+      </div>
+    `;
+
+    // Mark as bought/unbought
+    li.querySelector('.buy-btn').addEventListener('click', () => {
+      item.bought = !item.bought;
+      renderList();
+    });
+
+    // Remove item
+    li.querySelector('.remove-btn').addEventListener('click', () => {
+      shoppingList.splice(index, 1);
+      renderList();
+    });
+
+    listContainer.appendChild(li);
+  });
+}
+
+// Add item
+addBtn.addEventListener('click', () => {
+  const value = input.value.trim();
+  if (value) {
+    shoppingList.push({ name: value, bought: false });
+    input.value = '';
+    renderList();
+  }
+});
+
+// Enter key adds item
+input.addEventListener('keypress', (e) => {
+  if (e.key === 'Enter') addBtn.click();
+});
+</script>
+
+</body>
+</html>
